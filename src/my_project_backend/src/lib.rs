@@ -20,9 +20,7 @@ fn add_blog(title: String, content: String, tags: Vec<String>) -> Result<Blog, S
         blogs
         .borrow()
         .last()
-        .expect("Vec should not be empty")
-        .clone()
-    );
+        .expect("Vec should not be empty").clone());
     Ok(last_blog)
 }
 
