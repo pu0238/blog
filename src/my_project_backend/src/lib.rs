@@ -14,14 +14,14 @@ thread_local! {
 
 #[ic_cdk::update]
 fn add_blog(title: String, content: String, tags: Vec<String>) -> Result<Blog, String>{
-    let config
-    if title.len() > 250 {
+    let config = CONFIG.with(|config| config.borrow().clone());
+    if title.len() > config.max_title_len as usize {
         return Err("Title is too long!".to_string())
     }
-    if content.len() > 2000 {
+    if content.len() > config.max_content_len as usize {
         return Err("Content is too long!".to_string())
     }
-    if tags.len() > 3 {
+    if tags.len() > config.max_tags_count as usize {
         return Err("Too many tags!".to_string())
     }
     let blog = Blog::new(title, content, tags);

@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Config {
     pub max_tags_count: u8,
     pub max_content_len: u16,
