@@ -1,16 +1,20 @@
 use std::cell::RefCell;
 
 use crate::blog::Blog;
+use crate::config::Config;
 
 mod blog;
+mod config;
 
 thread_local! {
+    static CONFIG: RefCell<Config> = RefCell::new(Config::new());
     static BLOGS: RefCell<Vec<Blog>> = RefCell::new(Vec::new());
 }
 // komentarze ?
 
 #[ic_cdk::update]
 fn add_blog(title: String, content: String, tags: Vec<String>) -> Result<Blog, String>{
+    let config
     if title.len() > 250 {
         return Err("Title is too long!".to_string())
     }
