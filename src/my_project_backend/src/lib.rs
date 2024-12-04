@@ -14,6 +14,12 @@ fn add_blog(title: String, content: String, tags: Vec<String>) -> Result<Blog, S
     if title.len() > 250 {
         return Err("Title is too long!".to_string())
     }
+    if content.len() > 2000 {
+        return Err("Content is too long!".to_string())
+    }
+    if tags.len() > 3 {
+        return Err("Too many tags!".to_string())
+    }
     let blog = Blog::new(title, content, tags);
     BLOGS.with(|blogs| blogs.borrow_mut().push(blog));
     let last_blog = BLOGS.with(|blogs| 
