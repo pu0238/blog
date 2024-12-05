@@ -1,17 +1,16 @@
 <script setup>
 import { ref } from 'vue';
 import { my_project_backend } from 'declarations/my_project_backend/index';
-let blogs = ref([]);
+const blogs = ref([]);
+const tags = ref([]);
 
 async function handleSubmit(e) {
   e.preventDefault();
   const target = e.target;
   const title = target.querySelector('#title').value;
   const content = target.querySelector('#content').value;
-  const tags = target.querySelector('#tags').value;
-  const splitedTags = tags.split(",")
 
-  await my_project_backend.add_blog(title, content, splitedTags)
+  await my_project_backend.add_blog(title, content, tags)
   await getBlogs()
 }
 
@@ -24,6 +23,17 @@ async function getBlogs() {
     }
   })
 }
+
+function saveTag() {
+  const tagsContent = document.querySelector('#tags').value;
+  tags.value.push(tagsContent)
+  document.querySelector('#tags').value = "";
+}
+
+function removeTag(id) {
+  tags.value.splice(id, 1);
+}
+
 getBlogs()
 </script>
 
@@ -32,7 +42,7 @@ getBlogs()
     <img src="/logo2.svg" alt="DFINITY logo" class="mx-auto mt-4"/>
     <br />
     <br />
-    <form class="grid gap-4 pb-4 mb-4 border-solid border-b-2 border-sky-500" action="#" @submit="handleSubmit">
+    <form class="grid gap-4 pb-4 mb-4 border-solid border-b-2 border-indigo-500" action="#" @submit="handleSubmit">
       <div>
         <p class="text-black font-bold">Title: </p>
         <input 
@@ -48,6 +58,9 @@ getBlogs()
             border-solid 
             border-2
             border-black
+            transition 
+            duration-150 
+            ease-in-out
             hover:border-indigo-500
             "/>
       </div>
@@ -67,6 +80,9 @@ getBlogs()
             border-solid 
             border-2
             border-black
+            transition 
+            duration-150 
+            ease-in-out
             hover:border-indigo-500
           "></textarea>
       </div>
@@ -75,7 +91,8 @@ getBlogs()
         <input 
           id="tags" 
           alt="tags" 
-          type="text" 
+          type="text"
+          v-on:keyup.enter="saveTag"
           class="
             w-full 
             rounded-3xl 
@@ -85,8 +102,22 @@ getBlogs()
             border-solid 
             border-2
             border-black
+            transition 
+            duration-150 
+            ease-in-out
             hover:border-indigo-500"
           />
+          <div class="flex gap-1 flex-wrap my-2">
+          <div v-for="(tag, id) in tags" class="
+          text-white 
+          bg-indigo-400 
+          rounded-3xl 
+          py-1 
+          px-4
+          text-sm
+          w-fit" @click="removeTag(id)">
+          {{ tag }}
+        </div></div>
       </div>
       <div class="flex justify-end">
         <button 
@@ -95,18 +126,35 @@ getBlogs()
           bg-indigo-400 
           rounded-3xl 
           py-1 
-          px-4" type="submit">
+          px-4
+          transition 
+          duration-150 
+          ease-in-out
+          hover:scale-110
+          " type="submit">
             Click to add!
         </button>
       </div>
     </form>
     <div>
-      <div v-for="blog in blogs"> 
-        <h3>{{ blog.title }} </h3>
+      <div v-for="blog in blogs" class="pb-4 border-solid border-b-2 border-indigo-500 mb-4"> 
+        <div class="
+          mb-1
+          text-right
+        ">{{ new Date(Number(blog.date) / 1_000_000).toLocaleString() }}</div>
+        <h3 class="text-xl mb-2">{{ blog.title }} </h3>
         <p>{{ blog.content }}</p>
-        <div>
-          {{ blog.date }}
-          {{ blog.tags }}
+        <div class="mt-2">
+          <div class="flex gap-2 flex-wrap">
+            <div v-for="tag in blog.tags" class="
+              text-white 
+              bg-indigo-400 
+              rounded-3xl 
+              py-1 
+              px-4
+              text-sm
+              w-fit"> {{ tag }}</div>
+            </div>
         </div>
       </div>
     </div>
