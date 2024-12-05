@@ -51,6 +51,11 @@ fn get_blogs() -> Vec<Blog> {
 }
 
 #[ic_cdk::query]
+fn get_config() -> Config {
+    CONFIG.with(|config| config.borrow().clone())
+}
+
+#[ic_cdk::query]
 fn greet(name: String) -> String {
     format!("Hello, {}!", name)
 }
